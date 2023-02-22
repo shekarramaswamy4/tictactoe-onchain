@@ -2,6 +2,8 @@
 pragma solidity ^0.8.13;
 
 import "ds-test/test.sol";
+import "forge-std/Vm.sol";
+
 import "../src/TicTacToe.sol";
 
 contract TicTacToeTest is DSTest {
@@ -13,7 +15,7 @@ contract TicTacToeTest is DSTest {
     uint256 internal constant O = 2;
 
     function setUp() public {
-        ttt = new TicTacToken();
+        ttt = new TicTacToe();
     }
 
     function test_has_empty_board() public {
