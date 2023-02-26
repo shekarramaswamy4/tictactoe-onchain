@@ -9,6 +9,8 @@ contract TicTacToe {
         address playerO;
         uint256 turns;
         uint256[9] board;
+        bool finished;
+        address winner;
     }
 
     mapping(uint256 => Game) public games;
@@ -29,6 +31,10 @@ contract TicTacToe {
         _nextGameId++;
     }
 
+    function getGame(uint256 id) public view returns (Game memory) {
+        return games[id];
+    }
+
     function getBoard(uint256 id) public view returns (uint256[9] memory) {
         return games[id].board;
     }
@@ -39,11 +45,23 @@ contract TicTacToe {
     }
 
     function markSpace(uint256 id, uint256 space) public {
-        require(_validPlayer(id), "Unauthorized");
-        require(_validTurn(id), "Not your turn");
+        require(_validPlayerTurn(id), "Unauthorized");
         require(_emptySpace(id, space), "Already marked");
-        games[id].board[space] = _getSymbol(id, msg.sender);
+        require(space < 9, "Invalid space");
+        require(games[id].finished == false, "Game is finished");
+
+        games[id].board[space] = currentTurn(id);
         games[id].turns++;
+
+        uint256 win = winner(id);
+        // No winner
+        if (win == 0) {
+            return;
+        }
+
+        // There is a winner
+        games[id].finished = true;
+        games[id].winner = msg.sender;
     }
 
     function currentTurn(uint256 id) public view returns (uint256) {
@@ -68,23 +86,14 @@ contract TicTacToe {
         return 0;
     }
 
-    function _getSymbol(uint256 id, address player)
-        public
-        view
-        returns (uint256)
-    {
-        if (player == games[id].playerX) return X;
-        if (player == games[id].playerO) return O;
-        return EMPTY;
-    }
-
-    function _validTurn(uint256 id) internal view returns (bool) {
-        return currentTurn(id) == _getSymbol(id, msg.sender);
-    }
-
-    function _validPlayer(uint256 id) internal view returns (bool) {
-        return
-            msg.sender == games[id].playerX || msg.sender == games[id].playerO;
+    function _validPlayerTurn(uint256 id) internal view returns (bool) {
+        uint256 symbol = currentTurn(id);
+        if (symbol == X) {
+            return msg.sender == games[id].playerX;
+        } else if (symbol == O) {
+            return msg.sender == games[id].playerO;
+        }
+        return false;
     }
 
     function _checkWin(uint256 product) internal pure returns (uint256) {
@@ -122,19 +131,7 @@ contract TicTacToe {
         return games[id].board[2] * games[id].board[4] * games[id].board[6];
     }
 
-    function _validTurn(uint256 id, uint256 symbol)
-        internal
-        view
-        returns (bool)
-    {
-        return symbol == currentTurn(id);
-    }
-
     function _emptySpace(uint256 id, uint256 i) internal view returns (bool) {
         return games[id].board[i] == EMPTY;
-    }
-
-    function _validSymbol(uint256 symbol) internal pure returns (bool) {
-        return symbol == X || symbol == O;
     }
 }

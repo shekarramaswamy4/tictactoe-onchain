@@ -113,7 +113,7 @@ contract TicTacToeTest is DSTest {
 
     function test_symbols_must_alternate() public {
         playerX.markSpace(0, 0);
-        vm.expectRevert("Not your turn");
+        vm.expectRevert("Unauthorized");
         playerX.markSpace(0, 1);
     }
 
@@ -208,12 +208,12 @@ contract TicTacToeTest is DSTest {
     }
 
     function test_stores_player_X() public {
-        (address playerXAddr, , ) = ttt.games(0);
+        (address playerXAddr, , , , ) = ttt.games(0);
         assertEq(playerXAddr, PLAYER_X);
     }
 
     function test_stores_player_O() public {
-        (, address playerOAddr, ) = ttt.games(0);
+        (, address playerOAddr, , , ) = ttt.games(0);
         assertEq(playerOAddr, PLAYER_O);
     }
 
@@ -237,9 +237,8 @@ contract TicTacToeTest is DSTest {
 
     function test_creates_new_game() public {
         ttt.newGame(address(5), address(6));
-        (address playerXAddr, address playerOAddr, uint256 turns) = ttt.games(
-            1
-        );
+        (address playerXAddr, address playerOAddr, uint256 turns, , ) = ttt
+            .games(1);
         assertEq(playerXAddr, address(5));
         assertEq(playerOAddr, address(6));
         assertEq(turns, 0);
