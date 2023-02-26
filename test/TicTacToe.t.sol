@@ -93,6 +93,22 @@ contract TicTacToeTest is DSTest {
         }
     }
 
+    function test_winner() public {
+        playerX.markSpace(0, 0);
+        playerO.markSpace(0, 1);
+        playerX.markSpace(0, 3);
+        (, , , bool finished, address winner) = ttt.games(0);
+        assert(!finished);
+        assertEq(winner, address(0));
+
+        playerO.markSpace(0, 4);
+        playerX.markSpace(0, 6);
+        assertEq(ttt.winner(0), X);
+        (, , , finished, winner) = ttt.games(0);
+        assert(finished);
+        assertEq(winner, PLAYER_X);
+    }
+
     function test_can_mark_space_with_X() public {
         playerX.markSpace(0, 0);
         assertEq(ttt.getBoard(0)[0], X);

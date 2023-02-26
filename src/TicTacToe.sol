@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.13;
 
+// todo: get all games that a user is a part of
+// todo: can you play yourself?
 contract TicTacToe {
     address public owner;
 
