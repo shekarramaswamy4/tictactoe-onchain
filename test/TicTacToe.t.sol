@@ -97,16 +97,19 @@ contract TicTacToeTest is DSTest {
         playerX.markSpace(0, 0);
         playerO.markSpace(0, 1);
         playerX.markSpace(0, 3);
-        (, , , bool finished, address winner) = ttt.games(0);
+        (, , , , bool finished, address winner) = ttt.games(0);
         assert(!finished);
         assertEq(winner, address(0));
 
         playerO.markSpace(0, 4);
         playerX.markSpace(0, 6);
         assertEq(ttt.winner(0), X);
-        (, , , finished, winner) = ttt.games(0);
+        (, , , , finished, winner) = ttt.games(0);
         assert(finished);
         assertEq(winner, PLAYER_X);
+
+        vm.expectRevert("Game is finished");
+        playerO.markSpace(0, 5);
     }
 
     function test_can_mark_space_with_X() public {
@@ -224,12 +227,12 @@ contract TicTacToeTest is DSTest {
     }
 
     function test_stores_player_X() public {
-        (address playerXAddr, , , , ) = ttt.games(0);
+        (, address playerXAddr, , , , ) = ttt.games(0);
         assertEq(playerXAddr, PLAYER_X);
     }
 
     function test_stores_player_O() public {
-        (, address playerOAddr, , , ) = ttt.games(0);
+        (, , address playerOAddr, , , ) = ttt.games(0);
         assertEq(playerOAddr, PLAYER_O);
     }
 
@@ -253,10 +256,36 @@ contract TicTacToeTest is DSTest {
 
     function test_creates_new_game() public {
         ttt.newGame(address(5), address(6));
-        (address playerXAddr, address playerOAddr, uint256 turns, , ) = ttt
-            .games(1);
+        (
+            uint256 id,
+            address playerXAddr,
+            address playerOAddr,
+            uint256 turns,
+            ,
+
+        ) = ttt.games(1);
+        assertEq(id, 1);
         assertEq(playerXAddr, address(5));
         assertEq(playerOAddr, address(6));
         assertEq(turns, 0);
+    }
+
+    function test_fetches_games_for_player() public {
+        ttt.newGame(PLAYER_X, address(4));
+        uint256[] memory gameIds = ttt.getGameIdsForPlayer(PLAYER_X);
+        assertEq(gameIds.length, 2);
+        assertEq(gameIds[0], 0);
+        assertEq(gameIds[1], 1);
+
+        ttt.newGame(PLAYER_O, address(4));
+        uint256[] memory gameIdsO = ttt.getGameIdsForPlayer(PLAYER_O);
+        assertEq(gameIdsO.length, 2);
+        assertEq(gameIdsO[0], 0);
+        assertEq(gameIdsO[1], 2);
+    }
+
+    function test_cant_play_yourself() public {
+        vm.expectRevert("Can't play yourself");
+        ttt.newGame(address(4), address(4));
     }
 }

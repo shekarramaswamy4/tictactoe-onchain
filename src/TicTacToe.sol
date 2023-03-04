@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.13;
 
-// todo: get all games that a user is a part of
 // todo: can you play yourself?
 contract TicTacToe {
     address public owner;
 
     struct Game {
+        uint256 id;
         address playerX;
         address playerO;
         uint256 turns;
@@ -28,6 +28,8 @@ contract TicTacToe {
     }
 
     function newGame(address playerX, address playerO) public {
+        require(playerX != playerO, "Can't play yourself");
+        games[_nextGameId].id = _nextGameId;
         games[_nextGameId].playerX = playerX;
         games[_nextGameId].playerO = playerO;
         _nextGameId++;
@@ -39,6 +41,31 @@ contract TicTacToe {
 
     function getBoard(uint256 id) public view returns (uint256[9] memory) {
         return games[id].board;
+    }
+
+    function getGameIdsForPlayer(address player)
+        public
+        view
+        returns (uint256[] memory)
+    {
+        // 2 pass approach to correctly size the output array
+        uint256 count = 0;
+        for (uint256 i = 0; i < _nextGameId; i++) {
+            if (games[i].playerX == player || games[i].playerO == player) {
+                count++;
+            }
+        }
+
+        uint256[] memory gameIds = new uint256[](count);
+        uint256 idx = 0;
+        for (uint256 i = 0; i < _nextGameId; i++) {
+            if (games[i].playerX == player || games[i].playerO == player) {
+                gameIds[idx] = games[i].id;
+                idx++;
+            }
+        }
+
+        return gameIds;
     }
 
     function resetBoard(uint256 id) public {
