@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { ethers } from "ethers";
 import { ABI, contractAddress } from "./consts";
 import { createGame, markSpace, getGameIdsForPlayer } from "./api";
@@ -8,21 +8,26 @@ const classnames = (...classes) => classes.join(` `);
 function App() {
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const signer = provider.getSigner();
-  const contract = new ethers.Contract(contractAddress, ABI, signer);
 
   const [connectedAddress, setConnectedAddress] = useState("");
 
-  useEffect(() => {
-    // Fetch game ids for player
-    const fetchData = async () => {
-      const gameIds = await getGameIdsForPlayer(connectedAddress, contract);
-      console.log(gameIds);
-    };
+  // useMemo is used to memoize the contract object
+  const contract = useMemo(
+    () => new ethers.Contract(contractAddress, ABI, signer),
+    [signer]
+  );
 
-    fetchData().catch(console.error);
+  const refreshGameData = useCallback(async () => {
+    const gameIds = await getGameIdsForPlayer(connectedAddress, contract);
+    console.log(gameIds);
 
-    // document.title = `You clicked ${count} times`;
+    // Fetch each game and its data, store it in state
   }, [connectedAddress, contract]);
+
+  // If the connectedAddress changes, refresh the game data
+  useEffect(() => {
+    refreshGameData().catch(console.error);
+  }, [connectedAddress, refreshGameData]);
 
   async function connectWallet() {
     let address;
@@ -35,6 +40,11 @@ function App() {
       address = await signer.getAddress();
       setConnectedAddress(address);
     }
+  }
+
+  async function createNewGame(opponentAddress) {
+    await createGame(contract, connectedAddress, opponentAddress);
+    await refreshGameData();
   }
 
   return (
@@ -67,11 +77,7 @@ function App() {
           type="submit"
           className="btn btn-dark"
           onClick={() =>
-            createGame(
-              contract,
-              connectedAddress,
-              "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
-            )
+            createNewGame("0x70997970C51812dc3A010C7d01b50e0d17dc79C8")
           }
         >
           Create Game

@@ -14,8 +14,6 @@ export async function createGame(contract, connectedAddress, opponentAddress) {
   } catch (error) {
     console.log("Error creating game: ", error);
   }
-
-  // TODO: should refresh the game list on main page (how?)
 }
 
 export async function markSpace(contract, connectedAddress, gameId, space) {
@@ -41,5 +39,16 @@ export async function getGameIdsForPlayer(connectedAddress, contract) {
     return gameIds;
   } catch (error) {
     console.log("Error fetching game ids: ", error);
+  }
+}
+
+export async function getGameData(contract, gameId) {
+  try {
+    const gameData = await contract.getGame(gameId);
+    const board = await contract.getBoard(gameId);
+    gameData["board"] = board;
+    return gameData;
+  } catch (error) {
+    console.log("Error fetching game data: ", error);
   }
 }
