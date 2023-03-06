@@ -45,9 +45,16 @@ export async function getGameIdsForPlayer(connectedAddress, contract) {
 export async function getGameData(contract, gameId) {
   try {
     const gameData = await contract.getGame(gameId);
-    const board = await contract.getBoard(gameId);
-    gameData["board"] = board;
-    return gameData;
+    const gameDataStruct = {
+      gameId,
+      playerX: gameData.playerX,
+      playerO: gameData.playerO,
+      turns: gameData.turns,
+      finished: gameData.finished,
+      winner: gameData.winner,
+      board: gameData.board,
+    };
+    return gameDataStruct;
   } catch (error) {
     console.log("Error fetching game data: ", error);
   }

@@ -1,27 +1,32 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { ethers } from "ethers";
 import { ABI, contractAddress } from "./consts";
-import { createGame, markSpace, getGameIdsForPlayer } from "./api";
+import { createGame, markSpace, getGameIdsForPlayer, getGameData } from "./api";
 
 const classnames = (...classes) => classes.join(` `);
 
 function App() {
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const signer = provider.getSigner();
-
-  const [connectedAddress, setConnectedAddress] = useState("");
-
-  // useMemo is used to memoize the contract object
-  const contract = useMemo(
-    () => new ethers.Contract(contractAddress, ABI, signer),
-    [signer]
+  const [provider] = useState(
+    new ethers.providers.Web3Provider(window.ethereum)
+  );
+  const [signer] = useState(provider.getSigner());
+  const [contract] = useState(
+    new ethers.Contract(contractAddress, ABI, signer)
   );
 
-  const refreshGameData = useCallback(async () => {
-    const gameIds = await getGameIdsForPlayer(connectedAddress, contract);
-    console.log(gameIds);
+  const [connectedAddress, setConnectedAddress] = useState("");
+  const [gameData, setGameData] = useState([]);
 
-    // Fetch each game and its data, store it in state
+  const refreshGameData = useCallback(async () => {
+    if (connectedAddress === "") {
+      return;
+    }
+
+    const gameIds = await getGameIdsForPlayer(connectedAddress, contract);
+
+    const promises = gameIds.map((gameId) => getGameData(contract, gameId));
+    const currentGameData = await Promise.all(promises);
+    setGameData(currentGameData);
   }, [connectedAddress, contract]);
 
   // If the connectedAddress changes, refresh the game data
@@ -82,6 +87,13 @@ function App() {
         >
           Create Game
         </button>
+      </div>
+
+      <div className="col">
+        <h3>TTT games</h3>
+        {gameData.map((gameData) => {
+          return <h4>{gameData.playerX}</h4>;
+        })}
       </div>
     </div>
   );
