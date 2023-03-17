@@ -2,9 +2,11 @@ import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { ethers } from "ethers";
 import { ABI, contractAddress } from "./consts";
 import { createGame, markSpace, getGameIdsForPlayer, getGameData } from "./api";
+import Board from "./components/board";
 
 const classnames = (...classes) => classes.join(` `);
 
+// todo: think about how we want to handle waiting for transactions to confirm
 function App() {
   const [provider] = useState(
     new ethers.providers.Web3Provider(window.ethereum)
@@ -55,9 +57,16 @@ function App() {
   return (
     <div className="container mx-auto">
       <div className="flex flex-row justify-between">
-        <div className="my-2">
-          <h3>TicTacToe</h3>
-        </div>
+        <button
+          onClick={() =>
+            createGame("0x70997970C51812dc3A010C7d01b50e0d17dc79C8")
+          }
+          class={classnames(
+            "bg-blue-500 text-white font-bold px-4 py-2 my-2 rounded hover:bg-blue-700"
+          )}
+        >
+          Create New Game
+        </button>
 
         <div className="">
           <button
@@ -78,21 +87,12 @@ function App() {
 
       <div className="col">
         <h3>TTT actions</h3>
-        <button
-          type="submit"
-          className="btn btn-dark"
-          onClick={() =>
-            createNewGame("0x70997970C51812dc3A010C7d01b50e0d17dc79C8")
-          }
-        >
-          Create Game
-        </button>
       </div>
 
       <div className="col">
         <h3>TTT games</h3>
-        {gameData.map((gameData) => {
-          return <h4>{gameData.playerX}</h4>;
+        {gameData.map((data) => {
+          return <Board player={connectedAddress} gameData={data} />;
         })}
       </div>
     </div>

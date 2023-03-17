@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.13;
 
-// todo: can you play yourself?
 contract TicTacToe {
     address public owner;
 
@@ -43,11 +42,9 @@ contract TicTacToe {
         return games[id].board;
     }
 
-    function getGameIdsForPlayer(address player)
-        public
-        view
-        returns (uint256[] memory)
-    {
+    function getGameIdsForPlayer(
+        address player
+    ) public view returns (uint256[] memory) {
         // 2 pass approach to correctly size the output array
         uint256 count = 0;
         for (uint256 i = 0; i < _nextGameId; i++) {
