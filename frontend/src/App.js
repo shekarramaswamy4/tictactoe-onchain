@@ -91,10 +91,6 @@ function App() {
       </div>
 
       <div className="col">
-        <h3>TTT actions</h3>
-      </div>
-
-      <div className="col">
         <h3>TTT games</h3>
         {gameData.map((data) => {
           return (

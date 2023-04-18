@@ -1,15 +1,23 @@
+import { BigNumber } from "ethers";
 import React from "react";
 
 export default class Board extends React.Component {
   render() {
     const { player, gameData, markSpaceForGame } = this.props;
     console.log(gameData);
-    const { playerX, playerY, board, finished, winner } = gameData;
+    const { playerO, playerX, board, finished, winner } = gameData;
 
     return (
       <div>
-        <p>Turn</p>
-        <p>Blah</p>
+        <p>Finished: {finished ? "Yes" : "No"}</p>
+        <p>
+          Winner yet:{" "}
+          {BigNumber.from(winner).toNumber() === 0 ? "None" : winner}
+        </p>
+
+        <p>Player X: {playerX}</p>
+        <p>Player O: {playerO}</p>
+        <p>Turn: {gameData.turns.toNumber() % 2 === 0 ? "X" : "O"}</p>
         <div className="grid grid-cols-3 grid-rows-3 gap-0">
           {board.map((square, index) => {
             return (
@@ -31,7 +39,6 @@ class Square extends React.Component {
     const { gameData, index, markSpaceForGame } = this.props;
 
     const boardValue = gameData.board[index];
-    console.log(boardValue);
 
     function getSquareValue() {
       if (boardValue.toNumber() === 0) {
