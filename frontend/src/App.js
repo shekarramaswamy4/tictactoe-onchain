@@ -54,12 +54,17 @@ function App() {
     await refreshGameData();
   }
 
+  async function markSpaceForGame(gameId, space) {
+    await markSpace(contract, connectedAddress, gameId, space);
+    await refreshGameData();
+  }
+
   return (
     <div className="container mx-auto">
       <div className="flex flex-row justify-between">
         <button
           onClick={() =>
-            createGame("0x70997970C51812dc3A010C7d01b50e0d17dc79C8")
+            createNewGame("0x70997970C51812dc3A010C7d01b50e0d17dc79C8")
           }
           class={classnames(
             "bg-blue-500 text-white font-bold px-4 py-2 my-2 rounded hover:bg-blue-700"
@@ -92,7 +97,13 @@ function App() {
       <div className="col">
         <h3>TTT games</h3>
         {gameData.map((data) => {
-          return <Board player={connectedAddress} gameData={data} />;
+          return (
+            <Board
+              player={connectedAddress}
+              gameData={data}
+              markSpaceForGame={markSpaceForGame}
+            />
+          );
         })}
       </div>
     </div>

@@ -26,6 +26,7 @@ export async function markSpace(contract, connectedAddress, gameId, space) {
     await transaction.wait();
   } catch (error) {
     console.log("Error marking space: ", error);
+    alert("Error marking space, check the console");
   }
 }
 
