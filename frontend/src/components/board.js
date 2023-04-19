@@ -26,6 +26,7 @@ export default class Board extends React.Component {
             {board.map((_, index) => {
               return (
                 <Square
+                  key={index}
                   gameData={gameData}
                   index={index}
                   markSpaceForGame={markSpaceForGame}
@@ -46,50 +47,56 @@ class Square extends React.Component {
     const boardValue = gameData.board[index];
 
     function getSquareValue() {
+      const squareCss = "w-3/4 h-3/4";
       if (boardValue.toNumber() === 0) {
-        return "";
+        return <div></div>;
       } else if (boardValue.toNumber() === 1) {
-        return "X";
+        return <img src="/x.png" alt="X" className={squareCss} />;
       } else {
-        return "O";
+        return <img src="/o.png" alt="O" className={squareCss} />;
       }
     }
 
     function bordersForBox() {
-      const borderWidth = "4";
-      const borderProperties = "indigo-500";
+      // Can't use template variables in tailwind classes, hence this repeated stuff
+      // find and replace is our friend...
+      let borderClasses = "";
       if (index === 0) {
-        return `border-r-${borderWidth} border-b-${borderWidth} border-${borderProperties}`;
+        borderClasses = `border-r-2 border-b-2 border-blue-500`;
       }
       if (index === 1) {
-        return `border-r-${borderWidth} border-b-${borderWidth}   border-l-${borderWidth} border-${borderProperties}`;
+        borderClasses = `border-r-2 border-b-2 border-blue-500`;
       }
       if (index === 2) {
-        return `border-l-${borderWidth} border-b-${borderWidth} border-${borderProperties}`;
+        borderClasses = `border-l2 border-b-2 border-blue-500`;
       }
       if (index === 3) {
-        return `border-r-${borderWidth} border-b-${borderWidth}   border-t-${borderWidth} border-${borderProperties}`;
+        borderClasses = `border-r-2 border-b-2 border-blue-500`;
       }
       if (index === 4) {
-        return `border-r-${borderWidth} border-b-${borderWidth}   border-l-${borderWidth} border-t-${borderWidth} border-${borderProperties}`;
+        borderClasses = `border-r-2 border-b-2 border-blue-500`;
       }
       if (index === 5) {
-        return `border-b-${borderWidth} border-l-${borderWidth} border-t-${borderWidth} border-${borderProperties}`;
+        borderClasses = `border-b-2 border-l2 border-blue-500`;
       }
       if (index === 6) {
-        return `border-r-${borderWidth} border-l-${borderWidth} border-t-${borderWidth} border-${borderProperties}`;
+        borderClasses = `border-r-2 border-blue-500`;
       }
       if (index === 7) {
-        return `border-r-${borderWidth} border-l-${borderWidth} border-t-${borderWidth} border-${borderProperties}`;
+        borderClasses = `border-r-2 border-l2 border-blue-500`;
       }
       if (index === 8) {
-        return `border-l-${borderWidth} border-t-${borderWidth} border-${borderProperties}`;
+        borderClasses = `border-l2 border-blue-500`;
       }
+      return borderClasses;
     }
 
     return (
       <div
-        className={classnames("bg-blue-400 h-40 w-40", bordersForBox())}
+        className={classnames(
+          "h-40 w-40 flex justify-center items-center",
+          bordersForBox()
+        )}
         onClick={() => markSpaceForGame(gameData.gameId.toString(), index)}
       >
         {getSquareValue()}

@@ -64,7 +64,7 @@ function App() {
           onClick={() =>
             createNewGame("0x70997970C51812dc3A010C7d01b50e0d17dc79C8")
           }
-          class={classnames(
+          className={classnames(
             "bg-blue-500 text-white font-bold px-4 py-2 my-2 rounded hover:bg-blue-700"
           )}
         >
@@ -74,7 +74,7 @@ function App() {
         <div className="">
           <button
             onClick={connectWallet}
-            class={classnames(
+            className={classnames(
               "bg-blue-500 text-white font-bold px-4 py-2 my-2 rounded",
               `${
                 connectedAddress === ""
@@ -90,9 +90,10 @@ function App() {
 
       <div className="col">
         <h3>TTT games</h3>
-        {gameData.map((data) => {
+        {gameData.map((data, idx) => {
           return (
             <Board
+              key={idx}
               player={connectedAddress}
               gameData={data}
               markSpaceForGame={markSpaceForGame}
