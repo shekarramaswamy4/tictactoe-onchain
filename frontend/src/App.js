@@ -1,10 +1,8 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { ethers } from "ethers";
-import { ABI, contractAddress } from "./consts";
+import { ABI, contractAddress, classnames } from "./consts";
 import { createGame, markSpace, getGameIdsForPlayer, getGameData } from "./api";
 import Board from "./components/board";
-
-const classnames = (...classes) => classes.join(` `);
 
 // todo: think about how we want to handle waiting for transactions to confirm
 function App() {

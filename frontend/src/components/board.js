@@ -1,5 +1,6 @@
 import { BigNumber } from "ethers";
 import React from "react";
+import { classnames } from "../consts";
 
 export default class Board extends React.Component {
   render() {
@@ -7,8 +8,10 @@ export default class Board extends React.Component {
     console.log(gameData);
     const { playerO, playerX, board, finished, winner } = gameData;
 
+    // for grid: justify-content center?
+    // for grid: explicitly set width of grid?
     return (
-      <div>
+      <div className="flex flex-col items-center">
         <p>Finished: {finished ? "Yes" : "No"}</p>
         <p>
           Winner yet:{" "}
@@ -18,16 +21,18 @@ export default class Board extends React.Component {
         <p>Player X: {playerX}</p>
         <p>Player O: {playerO}</p>
         <p>Turn: {gameData.turns.toNumber() % 2 === 0 ? "X" : "O"}</p>
-        <div className="grid grid-cols-3 grid-rows-3 gap-0">
-          {board.map((square, index) => {
-            return (
-              <Square
-                gameData={gameData}
-                index={index}
-                markSpaceForGame={markSpaceForGame}
-              />
-            );
-          })}
+        <div className="aspect-square w-[480px]">
+          <div className="grid grid-cols-3 grid-rows-3">
+            {board.map((_, index) => {
+              return (
+                <Square
+                  gameData={gameData}
+                  index={index}
+                  markSpaceForGame={markSpaceForGame}
+                />
+              );
+            })}
+          </div>
         </div>
       </div>
     );
@@ -50,9 +55,41 @@ class Square extends React.Component {
       }
     }
 
+    function bordersForBox() {
+      const borderWidth = "4";
+      const borderProperties = "indigo-500";
+      if (index === 0) {
+        return `border-r-${borderWidth} border-b-${borderWidth} border-${borderProperties}`;
+      }
+      if (index === 1) {
+        return `border-r-${borderWidth} border-b-${borderWidth}   border-l-${borderWidth} border-${borderProperties}`;
+      }
+      if (index === 2) {
+        return `border-l-${borderWidth} border-b-${borderWidth} border-${borderProperties}`;
+      }
+      if (index === 3) {
+        return `border-r-${borderWidth} border-b-${borderWidth}   border-t-${borderWidth} border-${borderProperties}`;
+      }
+      if (index === 4) {
+        return `border-r-${borderWidth} border-b-${borderWidth}   border-l-${borderWidth} border-t-${borderWidth} border-${borderProperties}`;
+      }
+      if (index === 5) {
+        return `border-b-${borderWidth} border-l-${borderWidth} border-t-${borderWidth} border-${borderProperties}`;
+      }
+      if (index === 6) {
+        return `border-r-${borderWidth} border-l-${borderWidth} border-t-${borderWidth} border-${borderProperties}`;
+      }
+      if (index === 7) {
+        return `border-r-${borderWidth} border-l-${borderWidth} border-t-${borderWidth} border-${borderProperties}`;
+      }
+      if (index === 8) {
+        return `border-l-${borderWidth} border-t-${borderWidth} border-${borderProperties}`;
+      }
+    }
+
     return (
       <div
-        className="bg-blue-400 h-44 w-44"
+        className={classnames("bg-blue-400 h-40 w-40", bordersForBox())}
         onClick={() => markSpaceForGame(gameData.gameId.toString(), index)}
       >
         {getSquareValue()}
