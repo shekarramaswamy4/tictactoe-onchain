@@ -4,6 +4,13 @@ import { ABI, contractAddress, classnames } from "./consts";
 import { createGame, markSpace, getGameIdsForPlayer, getGameData } from "./api";
 import Board from "./components/board";
 
+/**
+ * TODO List
+ * 1. Make the CSS better
+ * 2. Show some waiting notification for transaction to confirm
+ * 3. ReLearn difference between useEffect useState useMemo useCallback
+ */
+
 // todo: think about how we want to handle waiting for transactions to confirm
 function App() {
   const [provider] = useState(

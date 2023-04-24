@@ -8,19 +8,28 @@ export default class Board extends React.Component {
     console.log(gameData);
     const { playerO, playerX, board, finished, winner } = gameData;
 
-    // for grid: justify-content center?
-    // for grid: explicitly set width of grid?
+    const isPlayerX = player === playerX;
+    const isPlayerXTurn = gameData.turns.toNumber() % 2 === 0;
+
+    // Have different treatment for finished games vs. in progress
     return (
-      <div className="flex flex-col items-center">
+      <div className={"flex flex-col items-center border-2 rounded py-4 mb-10"}>
         <p>Finished: {finished ? "Yes" : "No"}</p>
         <p>
           Winner yet:{" "}
           {BigNumber.from(winner).toNumber() === 0 ? "None" : winner}
         </p>
 
-        <p>Player X: {playerX}</p>
-        <p>Player O: {playerO}</p>
-        <p>Turn: {gameData.turns.toNumber() % 2 === 0 ? "X" : "O"}</p>
+        {isPlayerX ? (
+          <p>You (X) vs. {playerO} (O)</p>
+        ) : (
+          <p>You (O) vs. {playerX} (X)</p>
+        )}
+
+        {(isPlayerX && isPlayerXTurn) || (!isPlayerX && !isPlayerXTurn)
+          ? "It's your turn"
+          : "Waiting for opponent..."}
+
         <div className="aspect-square w-[480px]">
           <div className="grid grid-cols-3 grid-rows-3">
             {board.map((_, index) => {
