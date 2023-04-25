@@ -11,25 +11,57 @@ export default class Board extends React.Component {
     const isPlayerX = player === playerX;
     const isPlayerXTurn = gameData.turns.toNumber() % 2 === 0;
 
+    const opponent = isPlayerX ? playerO : playerX;
+
+    const didWin = winner === player;
+
+    function inProgressGameDisplay() {
+      return (
+        <div className={"flex flex-col items-center mb-10"}>
+          {isPlayerX ? (
+            <p>You (X) vs. {playerO} (O)</p>
+          ) : (
+            <p>You (O) vs. {playerX} (X)</p>
+          )}
+
+          {(isPlayerX && isPlayerXTurn) || (!isPlayerX && !isPlayerXTurn)
+            ? "It's your turn"
+            : "Waiting for opponent..."}
+        </div>
+      );
+    }
+
+    // finished === true
+    function finishedGameDisplay() {
+      const text = didWin
+        ? `You ${isPlayerX ? "(X)" : "(O)"} beat ${opponent}!`
+        : `You ${isPlayerX ? "(X)" : "(O)"} lost to ${opponent} :(`;
+
+      return (
+        <div>
+          <p>{text}</p>
+        </div>
+      );
+    }
+
+    function borderForGame() {
+      if (didWin) {
+        return "border-4 border-green-500";
+      } else if (!didWin && finished) {
+        return "border-4 border-red-500";
+      }
+      return "border-2 border-blue-500";
+    }
+
     // Have different treatment for finished games vs. in progress
     return (
-      <div className={"flex flex-col items-center border-2 rounded py-4 mb-10"}>
-        <p>Finished: {finished ? "Yes" : "No"}</p>
-        <p>
-          Winner yet:{" "}
-          {BigNumber.from(winner).toNumber() === 0 ? "None" : winner}
-        </p>
-
-        {isPlayerX ? (
-          <p>You (X) vs. {playerO} (O)</p>
-        ) : (
-          <p>You (O) vs. {playerX} (X)</p>
+      <div
+        className={classnames(
+          "flex flex-col items-center rounded py-4 mb-6",
+          borderForGame()
         )}
-
-        {(isPlayerX && isPlayerXTurn) || (!isPlayerX && !isPlayerXTurn)
-          ? "It's your turn"
-          : "Waiting for opponent..."}
-
+      >
+        {finished ? finishedGameDisplay() : inProgressGameDisplay()}
         <div className="aspect-square w-[480px]">
           <div className="grid grid-cols-3 grid-rows-3">
             {board.map((_, index) => {
