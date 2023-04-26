@@ -9,9 +9,6 @@ import Board from "./components/board";
  * TODO List
  * 1. Make the CSS better
  * 2. Show some waiting notification for transaction to confirm
- * 3. ReLearn difference between useEffect useState useMemo useCallback
- * 4. Choose who you play [in progress]
- * 5. Outline vs. border vs. ring
  */
 
 /**
@@ -85,8 +82,13 @@ const App = () => {
     await refreshGameData();
   }
 
-  // TODO: check if user has connected wallet first
-  const toggleCreateGamePopup = () => setShowCreateModal(!showCreateModal);
+  const toggleCreateGamePopup = () => {
+    if (connectedAddress === "") {
+      alert("Please connect your wallet first");
+      return;
+    }
+    setShowCreateModal(!showCreateModal);
+  };
 
   return (
     <div className="container mx-auto">
