@@ -1,24 +1,19 @@
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { ethers } from "ethers";
 import { ABI, contractAddress, classnames } from "./consts";
 import { createGame, markSpace, getGameIdsForPlayer, getGameData } from "./api";
 import CreateGameModal from "./components/createGameModal";
 import Board from "./components/board";
+import { ToastContainer } from "react-toastify";
+import { errorToast } from "./components/alerts";
+import "react-toastify/dist/ReactToastify.css";
 
 /**
- * TODO List
+ * Future Improvements List
  * 1. Make the CSS better
- * 2. Show some waiting notification for transaction to confirm
+ * 2. Handle errors with custom messaging
  */
 
-/**
- * Questions
- * 1. Recommend a good way to handle waiting for transactions to confirm.
- * - Specifically with preference to how code should be structured in api etc.
- * 2. Should I just be using functional components instead of classes
- */
-
-// todo: think about how we want to handle waiting for transactions to confirm
 const App = () => {
   const [provider] = useState(
     new ethers.providers.Web3Provider(window.ethereum)
@@ -66,7 +61,7 @@ const App = () => {
 
   async function createNewGame(opponentAddress) {
     if (opponentAddress === undefined || opponentAddress === "") {
-      alert("Please enter a valid wallet address");
+      errorToast("Please enter a valid wallet address!");
       return;
     }
 
@@ -84,7 +79,7 @@ const App = () => {
 
   const toggleCreateGamePopup = () => {
     if (connectedAddress === "") {
-      alert("Please connect your wallet first");
+      errorToast("Please connect your wallet first!");
       return;
     }
     setShowCreateModal(!showCreateModal);
@@ -92,6 +87,7 @@ const App = () => {
 
   return (
     <div className="container mx-auto">
+      <ToastContainer pauseOnFocusLoss={false} pauseOnHover={false} />
       {showCreateModal && (
         <CreateGameModal
           content={

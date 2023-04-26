@@ -1,3 +1,4 @@
+import { transactionToast, errorToast } from "./components/alerts";
 // Smart contract interactions
 
 export async function createGame(contract, connectedAddress, opponentAddress) {
@@ -10,9 +11,10 @@ export async function createGame(contract, connectedAddress, opponentAddress) {
       opponentAddress
     );
     console.log(transaction);
-    await transaction.wait();
+    await transactionToast(transaction.hash, transaction.wait);
   } catch (error) {
-    console.log("Error creating game: ", error);
+    errorToast("Error creating game");
+    console.error("Error creating game: ", error);
   }
 }
 
@@ -22,11 +24,10 @@ export async function markSpace(contract, connectedAddress, gameId, space) {
   }
   try {
     const transaction = await contract.markSpace(gameId, space);
-    console.log(transaction);
-    await transaction.wait();
+    await transactionToast(transaction.hash, transaction.wait);
   } catch (error) {
-    console.log("Error marking space: ", error);
-    alert("Error marking space, check the console");
+    errorToast("Error marking space");
+    console.error("Error marking space: ", error);
   }
 }
 
@@ -39,7 +40,8 @@ export async function getGameIdsForPlayer(connectedAddress, contract) {
     const gameIds = await contract.getGameIdsForPlayer(connectedAddress);
     return gameIds;
   } catch (error) {
-    console.log("Error fetching game ids: ", error);
+    errorToast("Error creating fetching game ids");
+    console.error("Error fetching game ids: ", error);
   }
 }
 
@@ -57,6 +59,7 @@ export async function getGameData(contract, gameId) {
     };
     return gameDataStruct;
   } catch (error) {
-    console.log("Error fetching game data: ", error);
+    errorToast("Error creating fetching game data");
+    console.error("Error fetching game data: ", error);
   }
 }
