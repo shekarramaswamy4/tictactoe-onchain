@@ -11,6 +11,7 @@ import Board from "./components/board";
  * 2. Show some waiting notification for transaction to confirm
  * 3. ReLearn difference between useEffect useState useMemo useCallback
  * 4. Choose who you play [in progress]
+ * 5. Outline vs. border vs. ring
  */
 
 /**
@@ -32,7 +33,9 @@ const App = () => {
 
   const [connectedAddress, setConnectedAddress] = useState("");
   const [gameData, setGameData] = useState([]);
-  const [showCreateModal, setShowCreateModel] = useState(false);
+
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [gameCreateWalletText, setGameCreateWalletText] = useState("");
 
   const refreshGameData = useCallback(async () => {
     if (connectedAddress === "") {
@@ -65,6 +68,14 @@ const App = () => {
   }
 
   async function createNewGame(opponentAddress) {
+    if (opponentAddress === undefined || opponentAddress === "") {
+      alert("Please enter a valid wallet address");
+      return;
+    }
+
+    setShowCreateModal(false);
+    setGameCreateWalletText("");
+
     await createGame(contract, connectedAddress, opponentAddress);
     await refreshGameData();
   }
@@ -74,7 +85,8 @@ const App = () => {
     await refreshGameData();
   }
 
-  const toggleCreateGamePopup = () => setShowCreateModel(!showCreateModal);
+  // TODO: check if user has connected wallet first
+  const toggleCreateGamePopup = () => setShowCreateModal(!showCreateModal);
 
   return (
     <div className="container mx-auto">
@@ -82,17 +94,27 @@ const App = () => {
         <CreateGameModal
           content={
             <>
-              <b>Design your Popup</b>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-                sunt in culpa qui officia deserunt mollit anim id est laborum.
-              </p>
-              <button onClick={() => console.log("hi")}>Test button</button>
+              <div className={"flex flex-col items-center p-10"}>
+                <input
+                  type="text"
+                  id="wallet-address"
+                  className={
+                    "border text-gray-900 rounded-lg block w-full p-2.5 focus:ring-blue-500 outline-blue-500"
+                  }
+                  placeholder="Wallet address of opponent (0x...)"
+                  value={gameCreateWalletText}
+                  onInput={(e) => setGameCreateWalletText(e.target.value)}
+                  required
+                ></input>
+                <button
+                  className={
+                    "mt-8 bg-blue-500 text-white font-bold px-4 py-2 my-2 rounded hover:bg-blue-700"
+                  }
+                  onClick={() => createNewGame(gameCreateWalletText)}
+                >
+                  Create
+                </button>
+              </div>
             </>
           }
           handleClose={toggleCreateGamePopup}
