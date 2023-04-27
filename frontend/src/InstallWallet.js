@@ -9,7 +9,11 @@ const InstallWallet = () => {
         <a className={"underline"} href={"https://metamask.io/"}>
           Metamask
         </a>{" "}
-        and come back!
+        and come back.
+      </p>
+      <p className={"text-lg"}>
+        Note: You'll need crypto to pay for gas. DM shekar if you don't have
+        any!
       </p>
     </div>
   );
