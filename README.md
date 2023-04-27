@@ -25,4 +25,6 @@ The contract itself is verified on Polygonscan. It doesn't handle any crypto and
 
 The frontend uses React.js and Tailwind. The CSS is barebones and was purely meant for a proof of concept.
 
+I made an active effort to have the transaction sending UX decent by using popups that notify you if and when your transactions succeed.
+
 It's hosted on Vercel.
