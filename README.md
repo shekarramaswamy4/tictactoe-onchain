@@ -1,4 +1,5 @@
 # On Chain TicTacToe
+<img width="800" alt="Screen Shot 2023-04-26 at 7 16 33 PM" src="https://user-images.githubusercontent.com/31163793/234744761-d483fca0-f6e3-4938-b8b4-9d7ba9968dc9.png">
 
 This is the smart contract and frontend implementation of an on chain tic tac toe game!
 
