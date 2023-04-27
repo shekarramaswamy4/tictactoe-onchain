@@ -86,7 +86,7 @@ export async function getGameIdsForPlayer(connectedAddress, contract) {
     const gameIds = await contract.getGameIdsForPlayer(connectedAddress);
     return gameIds;
   } catch (error) {
-    errorToast("Error creating fetching game ids");
+    errorToast("Error fetching game ids");
     console.error("Error fetching game ids: ", error);
   }
 }

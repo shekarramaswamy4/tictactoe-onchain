@@ -35,6 +35,9 @@ const App = () => {
     }
 
     const gameIds = await getGameIdsForPlayer(connectedAddress, contract);
+    if (gameIds === undefined || gameIds.length === 0) {
+      return;
+    }
 
     const promises = gameIds.map((gameId) => getGameData(contract, gameId));
     const currentGameData = await Promise.all(promises);
@@ -144,7 +147,9 @@ const App = () => {
               }`
             )}
           >
-            {connectedAddress === "" ? "Connect Wallet" : connectedAddress}
+            {connectedAddress === ""
+              ? "Connect Polygon Wallet"
+              : connectedAddress}
           </button>
         </div>
       </div>
