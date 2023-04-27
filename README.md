@@ -9,6 +9,8 @@ The motivation for this project was simply that I wanted:
 - To learn the e2e process of deploying and managing a smart contract with Foundry
 - To learn tailwind at a high level, and get better at React more broadly
 
+I specifically did _not_ want to spend a ton of time on UX and CSS. This was mainly to understand how a bunch of different pieces of the dapp development lifecycle fit together!
+
 ## Smart Contract
 
 The smart contract is heavily inspired by: https://book.tictactoken.co. I made a few modifications in order to make the frontend more ergonimic. The contract itself is located at `src/TicTacToe.sol`.
